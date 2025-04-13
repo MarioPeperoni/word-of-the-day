@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+
 import { wordSchema } from '@/schemas'
 
 const word = ref('')
@@ -20,7 +21,13 @@ const submitWord = async () => {
   }
 
   try {
-    await axios.post('http://localhost:2115/api/submit', { word: value })
+    await axios.post(
+      'http://localhost:2115/api/submit',
+      { word: value },
+      {
+        withCredentials: true,
+      },
+    )
     word.value = ''
   } catch (error) {
     shakeEffect()

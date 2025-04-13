@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
+import { getCookie } from './utils/cookie'
 import WordInput from './components/WordInput.vue'
 
 const today = new Date().toLocaleDateString('pl-PL', {
@@ -13,6 +16,14 @@ const weekDay = new Date().toLocaleDateString('pl-PL', {
 const showHistoric = () => {
   console.log('Historyczne słowa dnia')
 }
+
+onMounted(() => {
+  const today = new Date().getDate().toString()
+  const cookie = getCookie('submissionDay')
+
+  if (cookie == today) {
+  }
+})
 </script>
 
 <template>
