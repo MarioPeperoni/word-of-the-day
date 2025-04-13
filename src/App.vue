@@ -2,16 +2,9 @@
 import { onMounted } from 'vue'
 
 import { getCookie } from './utils/cookie'
+
 import WordInput from './components/WordInput.vue'
-
-const today = new Date().toLocaleDateString('pl-PL', {
-  month: 'long',
-  day: '2-digit',
-})
-
-const weekDay = new Date().toLocaleDateString('pl-PL', {
-  weekday: 'long',
-})
+import Header from './components/Header.vue'
 
 const showHistoric = () => {
   console.log('Historyczne słowa dnia')
@@ -27,12 +20,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header>
-    <h1>
-      Słowo dnia - <span class="weekday">{{ weekDay }}</span
-      >, {{ today }}
-    </h1>
-  </header>
+  <Header />
   <main>
     <WordInput />
   </main>
@@ -42,11 +30,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 main {
   display: flex;
   justify-content: center;
@@ -63,10 +46,5 @@ a {
   text-decoration: underline;
   font-size: 16px;
   cursor: pointer;
-}
-
-.weekday {
-  color: #ff6f2f;
-  font-weight: bold;
 }
 </style>
