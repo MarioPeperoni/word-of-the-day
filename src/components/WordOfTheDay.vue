@@ -14,11 +14,7 @@ const fetchWordOfTheDay = async () => {
   try {
     const response = await axios.get('http://127.0.0.1:3000/api/get')
     const data = response.data
-    if (data && data.word) {
-      word.value = data.word
-    } else {
-      word.value = 'Brak słowa dnia'
-    }
+    word.value = data.word
   } catch (error) {
     word.value = 'Błąd serwera'
     console.error('Error fetching word of the day:', error)

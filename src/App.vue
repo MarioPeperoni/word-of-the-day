@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import { getCookie } from './utils/cookie'
-
 import WordInput from './components/WordInput.vue'
 import WordOfTheDay from './components/WordOfTheDay.vue'
 import Header from './components/Header.vue'
@@ -14,13 +12,10 @@ const showHistoric = () => {
 }
 
 onMounted(() => {
-  const now = new Date()
-  const today = now.getDate().toString()
-  const hours = now.getHours()
-  const cookie = getCookie('submissionDay')
+  const hours = new Date().getHours()
 
-  if (cookie === today || hours >= 14) {
-    showInput.value = false
+  if (hours >= 14) {
+    showInput.value = true
   }
 })
 </script>

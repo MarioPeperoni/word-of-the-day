@@ -5,8 +5,11 @@ import axios from 'axios'
 import loadingSvg from '@/assets/90-ring.svg'
 
 import { wordSchema } from '@/schemas'
+// import { getCookie } from '@/utils/cookie'
 
-const word = ref('')
+const inputtedWord = ref('')
+const submittedWord = ref('')
+
 const shake = ref(false)
 const submitting = ref(false)
 
@@ -16,10 +19,15 @@ onMounted(() => {
   inputRef.value?.focus()
 })
 
+// onMounted(() => {
+//   const cookie = getCookie('submittedWord')
+//   submittedWord.value = cookie || ''
+// })
+
 const submitWord = async () => {
   submitting.value = true
-  const value = word.value.trim()
-  const validation = wordSchema.safeParse(word.value)
+  const value = inputtedWord.value.trim()
+  const validation = wordSchema.safeParse(inputtedWord.value)
 
   if (!validation.success) {
     shakeEffect()
@@ -38,7 +46,7 @@ const submitWord = async () => {
         },
       },
     )
-    word.value = ''
+    submittedWord.value = value
   } catch (error) {
     submitting.value = false
     shakeEffect()
@@ -56,34 +64,23 @@ const shakeEffect = () => {
 </script>
 
 <template>
-  <div class="word-input-container">
-    <div class="input-wrapper">
-      <input
-        ref="inputRef"
-        v-model="word"
-        type="text"
-        @keyup.enter="submitWord"
-        :class="['word-input', { shake, submitting }]"
-        :disabled="submitting"
-        placeholder="Słowo dnia"
-      />
-      <div v-if="submitting" class="loading-overlay">
-        <img :src="loadingSvg" alt="Loading..." />
-      </div>
+  <div class="input-wrapper">
+    <input
+      ref="inputRef"
+      v-model="inputtedWord"
+      type="text"
+      @keyup.enter="submitWord"
+      :class="['word-input', { shake, submitting }]"
+      :disabled="submitting"
+      placeholder="Słowo dnia"
+    />
+    <div v-if="submitting" class="loading-overlay">
+      <img :src="loadingSvg" alt="Loading..." />
     </div>
   </div>
 </template>
 
 <style scoped>
-.word-input-container {
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  margin-top: auto;
-  margin-bottom: auto;
-  padding: 30px;
-}
-
 .word-input {
   width: 100%;
   padding: 20px 10px;
@@ -102,23 +99,17 @@ const shakeEffect = () => {
   outline: none;
 }
 
-.submit-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 20px;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  background-color: #ff6f2f;
-  font-weight: 600;
+.word-input:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
 }
 
-.submit-button:hover {
-  background-color: #fc824e;
+.input-wrapper {
+  position: relative;
 }
+</style>
 
+<style lang="css" scoped>
 @keyframes shake {
   0% {
     transform: translateX(0);
@@ -142,18 +133,9 @@ const shakeEffect = () => {
   border-color: rgb(230, 64, 64);
   color: rgb(230, 64, 64);
 }
+</style>
 
-.word-input:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
-}
-
-.input-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
+<style lang="css" scoped>
 .loading-overlay {
   position: absolute;
   top: 50%;
