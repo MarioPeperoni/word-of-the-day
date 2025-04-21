@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import { getCookie } from './utils/cookie'
 
 import WordInput from './components/WordInput.vue'
+import WordOfTheDay from './components/WordOfTheDay.vue'
 import Header from './components/Header.vue'
+
+const hasRequestedWord = ref(false)
 
 const showHistoric = () => {
   console.log('Historyczne słowa dnia')
@@ -15,6 +18,7 @@ onMounted(() => {
   const cookie = getCookie('submissionDay')
 
   if (cookie == today) {
+    hasRequestedWord.value = true
   }
 })
 </script>
@@ -22,7 +26,8 @@ onMounted(() => {
 <template>
   <Header />
   <main>
-    <WordInput />
+    <WordOfTheDay v-if="hasRequestedWord" />
+    <WordInput v-else />
   </main>
   <footer>
     <a @click="showHistoric">Historyczne słowa dnia</a>

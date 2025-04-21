@@ -2,9 +2,14 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
+import loadingSvg from '@/assets/90-ring.svg'
+
 import { wordSchema } from '@/schemas'
 
 const word = ref('')
+const shake = ref(false)
+const submitting = ref(false)
+
 const inputRef = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
@@ -12,48 +17,60 @@ onMounted(() => {
 })
 
 const submitWord = async () => {
+  submitting.value = true
   const value = word.value.trim()
   const validation = wordSchema.safeParse(word.value)
 
   if (!validation.success) {
     shakeEffect()
+    submitting.value = false
     return
   }
 
   try {
     await axios.post(
-      'http://localhost:2115/api/submit',
+      'http://127.0.0.1:3000/api/submit',
       { word: value },
       {
         withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
     )
     word.value = ''
   } catch (error) {
+    submitting.value = false
     shakeEffect()
+  } finally {
+    submitting.value = false
   }
 }
 
 const shakeEffect = () => {
-  const input = inputRef.value
-  input?.classList.add('shake')
-
+  shake.value = true
   setTimeout(() => {
-    input?.classList.remove('shake')
+    shake.value = false
   }, 500)
 }
 </script>
 
 <template>
   <div class="word-input-container">
-    <input
-      ref="inputRef"
-      v-model="word"
-      type="text"
-      @keyup.enter="submitWord"
-      class="word-input"
-      placeholder="Słowo dnia"
-    />
+    <div class="input-wrapper">
+      <input
+        ref="inputRef"
+        v-model="word"
+        type="text"
+        @keyup.enter="submitWord"
+        :class="['word-input', { shake, submitting }]"
+        :disabled="submitting"
+        placeholder="Słowo dnia"
+      />
+      <div v-if="submitting" class="loading-overlay">
+        <img :src="loadingSvg" alt="Loading..." />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -124,5 +141,29 @@ const shakeEffect = () => {
   animation: shake 0.5s ease-in-out;
   border-color: rgb(230, 64, 64);
   color: rgb(230, 64, 64);
+}
+
+.word-input:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.loading-overlay img {
+  width: 50px;
+  height: 50px;
 }
 </style>
