@@ -7,7 +7,7 @@ import WordInput from './components/WordInput.vue'
 import WordOfTheDay from './components/WordOfTheDay.vue'
 import Header from './components/Header.vue'
 
-const hasRequestedWord = ref(false)
+const showInput = ref(true)
 
 const showHistoric = () => {
   console.log('Historyczne słowa dnia')
@@ -18,7 +18,7 @@ onMounted(() => {
   const cookie = getCookie('submissionDay')
 
   if (cookie == today) {
-    hasRequestedWord.value = true
+    showInput.value = true
   }
 })
 </script>
@@ -26,7 +26,7 @@ onMounted(() => {
 <template>
   <Header />
   <main>
-    <WordOfTheDay v-if="hasRequestedWord" />
+    <WordOfTheDay v-if="showInput" />
     <WordInput v-else />
   </main>
   <footer>
