@@ -14,11 +14,13 @@ const showHistoric = () => {
 }
 
 onMounted(() => {
-  const today = new Date().getDate().toString()
+  const now = new Date()
+  const today = now.getDate().toString()
+  const hours = now.getHours()
   const cookie = getCookie('submissionDay')
 
-  if (cookie == today) {
-    showInput.value = true
+  if (cookie === today || hours >= 14) {
+    showInput.value = false
   }
 })
 </script>
@@ -26,8 +28,8 @@ onMounted(() => {
 <template>
   <Header />
   <main>
-    <WordOfTheDay v-if="showInput" />
-    <WordInput v-else />
+    <WordInput v-if="showInput" />
+    <WordOfTheDay v-else />
   </main>
   <footer>
     <a @click="showHistoric">Historyczne słowa dnia</a>
